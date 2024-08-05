@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createPerson, updatePerson } from './actions';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const formSchema = z.object({
     firstname: z.string().min(2).max(50),
@@ -62,6 +62,10 @@ export function PersonForm({ person }: PersonFormProps) {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{person ? 'Edit' : 'Add'} Person</DialogTitle>
+                    <DialogDescription>
+                        {person ? 'Update the details of the person' : 'Enter the details of the person'}
+                    </DialogDescription>
+
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>

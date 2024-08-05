@@ -1,5 +1,6 @@
 import "./globals.css"
 import { Inter as FontSans } from "next/font/google"
+import AppHeader from "./header"
 
 import { cn } from "@/lib/utils"
 
@@ -22,6 +23,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
           fontSans.variable
         )}
       >
+              <AppHeader />
+
         {children}
       </body>
     </html>

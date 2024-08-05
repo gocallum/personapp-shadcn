@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Person } from '../../lib/model';
-import { createPerson, updatePerson } from '../actions/person-actions';
+import { createPerson, updatePerson } from './person-actions';
 
 const formSchema = z.object({
     firstname: z.string().min(2).max(50),
