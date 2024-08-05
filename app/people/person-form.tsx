@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createPerson, updatePerson } from './actions';
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const formSchema = z.object({
     firstname: z.string().min(2).max(50),
@@ -29,6 +29,7 @@ interface PersonFormProps {
 }
 
 export function PersonForm({ person }: PersonFormProps) {
+    const [isOpen, setIsOpen] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -45,16 +46,18 @@ export function PersonForm({ person }: PersonFormProps) {
             console.log('Updating person:', person);
             savedPerson = await updatePerson({ ...data, id: person.id });
         } else {
-            console.log('creating person:', person);
+            console.log('Creating person:', data);
             savedPerson = await createPerson(data);
+            form.reset(); // Reset the form after a successful add
         }
         console.log('Saved person:', savedPerson);
+        setIsOpen(false); // Close the dialog after successful submission
     }
 
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">{person ? 'Edit' : 'Add'} </Button>
+                {person ? <Button variant="outline" onClick={() => setIsOpen(true)}>Edit</Button> : <Button onClick={() => setIsOpen(true)}>Add</Button>}
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -102,17 +105,12 @@ export function PersonForm({ person }: PersonFormProps) {
                             )}
                         />
                         <DialogFooter>
-                            <DialogClose asChild>
-                                <Button type="button" variant="secondary">
-                                    Close
-                                </Button>
-                            </DialogClose>
-                            <DialogClose asChild>
-
+                            <Button type="button" variant="secondary" onClick={() => setIsOpen(false)}>
+                                Close
+                            </Button>
                             <Button type="submit">
                                 {person ? "Save" : "Add"}
                             </Button>
-                            </DialogClose>
                         </DialogFooter>
                     </form>
                 </Form>

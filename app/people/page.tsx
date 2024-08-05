@@ -18,42 +18,44 @@ const PersonPage: React.FC = async() => {
     const people: Person[] = await getPeople();
 
     return (
-        <Card>
-            <CardHeader className="w-[450px]">
-                <div className="flex justify-between items-center">
-                    <h3>Person List</h3>
-                </div>
-            </CardHeader>
-            <CardContent className="px-8">
-                <PersonForm person={undefined}/>
-
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>First name</TableHead>
-                            <TableHead>Last name</TableHead>
-                            <TableHead>Phone</TableHead>
-                            <TableHead>Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {people.map((person) => (
-                            <TableRow key={person.id}>
-                                <TableCell>{person.firstname}</TableCell>
-                                <TableCell>{person.lastname}</TableCell>
-                                <TableCell>{person.phone}</TableCell>
-                                <TableCell>
-                                    <PersonForm person={person} />
-                                    <form action={deletePerson}>
-                                    <input type="hidden" name="id" value={person.id} />
-                                    <Button type='submit'>Delete</Button> </form>
-                                </TableCell>
+        <div className="flex justify-center mt-8 px-4">
+            <Card className="w-full max-w-4xl bg-white shadow-lg rounded-lg">
+                <CardHeader >
+                    <div className="flex justify-between items-center">
+                        <h3 className="text-lg font-bold">Person List</h3>
+                        <PersonForm person={undefined} />
+                    </div>
+                </CardHeader>
+                <CardContent className="p-8">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="text-left">First name</TableHead>
+                                <TableHead className="text-left">Last name</TableHead>
+                                <TableHead className="text-left">Phone</TableHead>
+                                <TableHead className="text-left">Actions</TableHead>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </CardContent>
-        </Card>
+                        </TableHeader>
+                        <TableBody>
+                            {people.map((person) => (
+                                <TableRow key={person.id} className="hover:bg-gray-100">
+                                    <TableCell>{person.firstname}</TableCell>
+                                    <TableCell>{person.lastname}</TableCell>
+                                    <TableCell>{person.phone}</TableCell>
+                                    <TableCell className="flex space-x-2">
+                                        <PersonForm person={person} />
+                                        <form action={deletePerson} className="inline">
+                                            <input type="hidden" name="id" value={person.id} />
+                                            <Button type='submit' variant="destructive" className="ml-2">Delete</Button>
+                                        </form>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+        </div>
     );
 };
 

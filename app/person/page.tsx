@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
     Table,
     TableBody,
@@ -24,30 +23,20 @@ const mockData: Person[] = [
 
 const PersonPage: React.FC = () => {
     const [persons, setPersons] = useState<Person[]>(mockData);
-    const [selectedPerson, setSelectedPerson] = useState<Person | undefined>(undefined);
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-    const handleEdit = (person?: Person) => {
-        setSelectedPerson(person);
-        setIsDialogOpen(true);
-    };
-
-    const handleCloseDialog = () => {
-        setIsDialogOpen(false);
-        setSelectedPerson(undefined);
-    };
 
     const handleSavePerson = (savedPerson: Person) => {
-        if (selectedPerson) {
-            setPersons((prevPersons) =>
-                prevPersons.map((person) =>
-                    person.id === savedPerson.id ? savedPerson : person
-                )
-            );
-        } else {
-            setPersons((prevPersons) => [...prevPersons, savedPerson]);
-        }
-        handleCloseDialog();
+        setPersons((prevPersons) => {
+            const existingPersonIndex = prevPersons.findIndex(person => person.id === savedPerson.id);
+            if (existingPersonIndex !== -1) {
+                // Update existing person
+                const updatedPersons = [...prevPersons];
+                updatedPersons[existingPersonIndex] = savedPerson;
+                return updatedPersons;
+            } else {
+                // Add new person
+                return [...prevPersons, { ...savedPerson, id: prevPersons.length + 1 }];
+            }
+        });
     };
 
     const columns: ColumnDef<Person>[] = [
@@ -59,9 +48,7 @@ const PersonPage: React.FC = () => {
             cell: ({ row }) => {
                 const person = row.original;
                 return (
-                    <Button variant="outline" onClick={() => handleEdit(person)}>
-                        Edit
-                    </Button>
+                    <PersonForm person={person} onSave={handleSavePerson} />
                 );
             },
         },
@@ -76,21 +63,7 @@ const PersonPage: React.FC = () => {
     return (
         <div className="container mx-auto p-4">
             <div className="flex justify-end mb-4">
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button onClick={() => handleEdit(undefined)}>Add Person</Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>{selectedPerson ? "Edit Person" : "Add Person"}</DialogTitle>
-                        </DialogHeader>
-                        <PersonForm
-                            person={selectedPerson}
-                            onClose={handleCloseDialog}
-                            onSave={handleSavePerson}
-                        />
-                    </DialogContent>
-                </Dialog>
+                <PersonForm onSave={handleSavePerson} />
             </div>
             <Card>
                 <CardHeader>

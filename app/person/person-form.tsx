@@ -67,8 +67,8 @@ export function PersonForm({ person, onSave }: PersonFormProps) {
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" onClick={openDialog}>
-                    {person ? "Edit Person" : "Add Person"}
+                <Button onClick={openDialog}>
+                    {person ? "Edit" : "Add Person"}
                 </Button>
             </DialogTrigger>
             <DialogContent>
